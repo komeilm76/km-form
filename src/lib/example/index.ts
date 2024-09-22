@@ -19,16 +19,58 @@ const packageTemplateStarter = () => {
           exchgRate: z.number(),
           exchgAmnt: z.number(),
           descp: z.string(),
+          ddd: z.object({
+            name: z.string(),
+          }),
         })
         .array(),
+      info: z.object({
+        email: z.string().email(),
+      }),
     }),
   });
 
   let form = service.form.makeForm(schema.shape.body, {});
-  console.log('form', form);
+  form.setValues({
+    docId: 12,
+    docDate: new Date(),
+    description: 'salam',
+    issuer: 'ssss',
+    items: [
+      { amount: 12 },
+      { auxacctId: 23 },
+      { ddd: { name: 'gggggggggggg' } },
+    ],
+    info: {
+      email: 'komeil@gmail.com',
+    },
+  });
 
-  let values = form.getValues();
-  console.log('values', values);
+  // let values = form.getValues();
+  // let testSchemas = [
+  //   z.number(),
+  //   z.bigint(),
+  //   z.string(),
+  //   z.any(),
+  //   z.never(),
+  //   z.unknown(),
+  //   z.void(),
+  //   z.boolean(),
+  //   z.date(),
+  //   z.symbol(),
+  //   z.literal('sss'),
+  //   z.union([z.literal('dd'), z.literal('rrr')]),
+  //   z.tuple([z.literal('dd'), z.literal('rrr')]),
+  //   z.object({}),
+  //   z.array(z.string()),
+  //   z.optional(z.string()),
+  //   z.nullable(z.string()),
+  //   z.null(),
+  //   z.undefined(),
+  // ];
+  // testSchemas.forEach((item) => {
+  //   console.log(item._def.typeName);
+  // });
 };
 
 export default {

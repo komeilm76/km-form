@@ -11,6 +11,7 @@ import {
 
 import _ from 'lodash';
 import { ref } from 'km-fresh';
+import { PartialDeep } from 'type-fest';
 
 const addDescriptionToSchema = <SCHEMA extends AnyZodObject>(
   schema: SCHEMA,
@@ -95,6 +96,33 @@ type IArrayShape<
     : undefined;
 }[];
 
+type IZodTypes =
+  | 'ZodNumber'
+  | 'ZodBigInt'
+  | 'ZodString'
+  | 'ZodAny'
+  | 'ZodNever'
+  | 'ZodUnknown'
+  | 'ZodVoid'
+  | 'ZodBoolean'
+  | 'ZodDate'
+  | 'ZodSymbol'
+  | 'ZodLiteral'
+  | 'ZodUnion'
+  | 'ZodTuple'
+  | 'ZodObject'
+  | 'ZodArray'
+  | 'ZodOptional'
+  | 'ZodNullable'
+  | 'ZodNull'
+  | 'ZodUndefined';
+
+// @ts-ignore
+const getTypeSchema = (schema: ZodTypeAny) => {
+  let output = schema._def.typeName as IZodTypes;
+  return output;
+};
+
 const makeFieldShape = (key: string, schema: ZodTypeAny) => {
   let v = makeDefaultValueBySchema(schema);
   return {
@@ -109,27 +137,29 @@ const makeFieldShape = (key: string, schema: ZodTypeAny) => {
 
 const makeFieldBySchema = (key: string, schema: ZodTypeAny) => {
   let mode: 'parent' | 'field' = 'parent';
-  if (schema._def.typeName == 'ZodObject') {
+  let typeOfSchema = getTypeSchema(schema);
+
+  if (typeOfSchema == 'ZodObject') {
     let _schema = schema as AnyZodObject;
     return makeShapeBySchema(_schema, mode);
   }
-  if (schema._def.typeName == 'ZodArray') {
+  if (typeOfSchema == 'ZodArray') {
     let _schema = schema as ZodArray<AnyZodObject>;
-    let schemas = Array.from({ length: 0 }).map(() => {
+    let schemas = Array.from({ length: 1 }).map(() => {
       return makeShapeBySchema(_schema.element, mode);
     });
 
     return schemas;
   } else if (
-    schema instanceof ZodString ||
-    schema instanceof ZodDate ||
-    schema instanceof ZodNumber ||
-    schema instanceof ZodBoolean
+    typeOfSchema == 'ZodString' ||
+    typeOfSchema == 'ZodDate' ||
+    typeOfSchema == 'ZodNumber' ||
+    typeOfSchema == 'ZodBoolean'
   ) {
     let field = makeFieldShape(key, schema);
     return field;
   } else {
-    console.log('error (not supported):', schema);
+    console.log(`error (not supported):${typeOfSchema}`, schema);
     throw 'schema is not supported';
   }
 };
@@ -217,6 +247,45 @@ const makeForm = <SCHEMA extends AnyZodObject>(
 
     return values as z.infer<SCHEMA>;
   };
+  const setFormValues = (
+    _shape: typeof formShape,
+    values: PartialDeep<z.infer<SCHEMA>>,
+    _schema: SCHEMA
+  ) => {
+    for (const _key in values) {
+      if (Object.prototype.hasOwnProperty.call(values, _key)) {
+        let key = _key as keyof typeof values;
+        let schema = _schema.shape[key];
+        // @ts-ignore
+        let value = values[key];
+        let path = `${_key}.content.value`;
+
+        let mode = _.get(_shape, `${_key}.mode`);
+        // @ts-ignore
+        let newShape = _shape[key];
+
+        // @ts-ignore
+        if (mode == 'parent') {
+          // @ts-ignore
+          setFormValues(newShape, value, schema);
+          // @ts-ignore
+        } else if (mode == 'field') {
+          // @ts-ignore
+          _.set(_shape, path, values[key]);
+        } else {
+          let arraySchema = schema as ZodArray<AnyZodObject>;
+          let elementSchema = arraySchema.element;
+          let arrayValue = value as any[];
+          arrayValue.forEach((item, index) => {
+            let elementForm = makeForm(elementSchema, {});
+            elementForm.setValues(item);
+            // @ts-ignore
+            newShape[index] = elementForm.shape;
+          });
+        }
+      }
+    }
+  };
 
   const check = () => {
     let formValues = getFormValues(formShape);
@@ -235,6 +304,9 @@ const makeForm = <SCHEMA extends AnyZodObject>(
     },
     isValid,
     check,
+    setValues: (values: PartialDeep<z.infer<SCHEMA>>) => {
+      setFormValues(formShape, values, schema);
+    },
   };
 };
 
