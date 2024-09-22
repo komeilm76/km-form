@@ -120,7 +120,7 @@ type IZodTypes =
 // @ts-ignore
 const getTypeSchema = (schema: ZodTypeAny) => {
   let output = schema._def.typeName as IZodTypes;
-  return output; 
+  return output;
 };
 
 const makeFieldShape = (key: string, schema: ZodTypeAny) => {
