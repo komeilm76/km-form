@@ -3,6 +3,7 @@ import {
   z,
   ZodArray,
   ZodBoolean,
+  ZodDate,
   ZodNumber,
   ZodString,
   ZodTypeAny,
@@ -25,6 +26,8 @@ const makeDefaultValueBySchema = (schemaValue: any) => {
   let initialValue = undefined;
   if (schemaValue instanceof ZodString) {
     initialValue = '';
+  } else if (schemaValue instanceof ZodDate) {
+    initialValue = '';
   } else if (schemaValue instanceof ZodNumber) {
     initialValue = 0;
   } else if (schemaValue instanceof ZodBoolean) {
@@ -38,6 +41,14 @@ type IStringShape<SCHEMA extends ZodTypeAny> = {
   title: string;
   key: string;
   content: ReturnType<typeof ref<string>>;
+  schema: SCHEMA;
+  errors: typeof ref<[]>;
+};
+type IDateShape<SCHEMA extends ZodTypeAny> = {
+  mode: 'field';
+  title: string;
+  key: string;
+  content: ReturnType<typeof ref<Date>>;
   schema: SCHEMA;
   errors: typeof ref<[]>;
 };
@@ -63,6 +74,8 @@ type IObjectShape<SCHEMA extends AnyZodObject = AnyZodObject> = {
 } & {
   [key in keyof SCHEMA['shape']]: SCHEMA['shape'][key] extends ZodString
     ? IStringShape<SCHEMA['shape'][key]>
+    : SCHEMA['shape'][key] extends ZodDate
+    ? IDateShape<SCHEMA['shape'][key]>
     : SCHEMA['shape'][key] extends ZodNumber
     ? INumberShape<SCHEMA['shape'][key]>
     : SCHEMA['shape'][key] extends ZodBoolean
@@ -109,6 +122,7 @@ const makeFieldBySchema = (key: string, schema: ZodTypeAny) => {
     return schemas;
   } else if (
     schema instanceof ZodString ||
+    schema instanceof ZodDate ||
     schema instanceof ZodNumber ||
     schema instanceof ZodBoolean
   ) {
@@ -141,6 +155,8 @@ const makeShapeBySchema = <SCHEMA extends AnyZodObject>(
   return fields as {
     [key in keyof z.infer<SCHEMA>]: SCHEMA['shape'][key] extends ZodString
       ? IStringShape<SCHEMA['shape'][key]>
+      : SCHEMA['shape'][key] extends ZodDate
+      ? IDateShape<SCHEMA['shape'][key]>
       : SCHEMA['shape'][key] extends ZodNumber
       ? INumberShape<SCHEMA['shape'][key]>
       : SCHEMA['shape'][key] extends ZodBoolean
