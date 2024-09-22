@@ -3,15 +3,29 @@ import service from '../service';
 
 const packageTemplateStarter = () => {
   const schema = z.object({
-    name: z.string(),
-    age: z.number(),
-    isMarid: z.boolean(),
-    info: z.object({
-      power: z.number(),
+    body: z.object({
+      docId: z.number(),
+      description: z.string(),
+      docDate: z.date(),
+      issuer: z.string(),
+      items: z
+        .object({
+          item: z.number(),
+          auxacctId: z.number(),
+          detacctId: z.number(),
+          amount: z.number(),
+          exchg: z.string(),
+          bankId: z.number(),
+          exchgRate: z.number(),
+          exchgAmnt: z.number(),
+          descp: z.string(),
+        })
+        .array(),
     }),
   });
 
-  let form = service.form.makeForm(schema, {});
+  let form = service.form.makeForm(schema.shape.body, {});
+  console.log('form', form);
 
   let values = form.getValues();
   console.log('values', values);
