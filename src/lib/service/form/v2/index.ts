@@ -33,7 +33,7 @@ const addDescriptionToSchema = <SCHEMA extends AnyZodObject>(
 const logger = (v: number, enable: boolean = true) => {
   if (enable == true) {
     console.log('log:', v);
-    notSupported = `notSupported ${v}`
+    notSupported = `notSupported ${v}`;
   }
 };
 
