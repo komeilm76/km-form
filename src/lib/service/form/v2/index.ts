@@ -30,74 +30,108 @@ const addDescriptionToSchema = <SCHEMA extends AnyZodObject>(
   return describedSchema;
 };
 
+const logger = (v: number, enable: boolean = true) => {
+  if (enable == true) {
+    console.log('log:', v);
+  }
+};
+
 const makeDefaultValueBySchema = (schemaValue: any) => {
   let initialValue = undefined;
   if (schemaValue instanceof ZodString) {
     initialValue = '';
+    logger(1);
   } else if (schemaValue instanceof ZodDate) {
     initialValue = '';
+    logger(2);
   } else if (schemaValue instanceof ZodNumber) {
     initialValue = 0;
+    logger(3);
   } else if (schemaValue instanceof ZodBoolean) {
     initialValue = false;
+    logger(4);
   } else if (schemaValue instanceof ZodNull) {
     initialValue = null;
+    logger(5);
   } else if (schemaValue instanceof ZodUndefined) {
     initialValue = undefined;
+    logger(6);
   } else if (schemaValue instanceof ZodDefault) {
     let innerType = schemaValue._def.innerType;
     let defaultValue = schemaValue._def.defaultValue();
     if (innerType instanceof ZodString) {
       initialValue = (defaultValue as string) || '';
+      logger(7);
     } else if (innerType instanceof ZodDate) {
       initialValue = (defaultValue as string) || '';
+      logger(8);
     } else if (innerType instanceof ZodNumber) {
       initialValue = (defaultValue as number) || 0;
+      logger(9);
     } else if (innerType instanceof ZodBoolean) {
       initialValue = (defaultValue as boolean) || false;
+      logger(10);
     } else if (innerType instanceof ZodNull) {
       initialValue = (defaultValue as null) || null;
+      logger(11);
     } else if (innerType instanceof ZodUndefined) {
       initialValue = (defaultValue as undefined) || undefined;
+      logger(12);
     } else {
       initialValue = notSupported;
+      logger(13);
     }
   } else if (schemaValue instanceof ZodOptional) {
     let innerType = schemaValue._def.innerType;
     if (innerType instanceof ZodString) {
       initialValue = undefined;
+      logger(14);
     } else if (innerType instanceof ZodDate) {
       initialValue = undefined;
+      logger(15);
     } else if (innerType instanceof ZodNumber) {
       initialValue = undefined;
+      logger(16);
     } else if (innerType instanceof ZodBoolean) {
       initialValue = undefined;
+      logger(17);
     } else if (innerType instanceof ZodNull) {
       initialValue = undefined;
+      logger(18);
     } else if (innerType instanceof ZodUndefined) {
       initialValue = undefined;
+      logger(18);
     } else {
       initialValue = notSupported;
+      logger(20);
     }
   } else if (schemaValue instanceof ZodNullable) {
     let innerType = schemaValue._def.innerType;
     if (innerType instanceof ZodString) {
       initialValue = null;
+      logger(21);
     } else if (innerType instanceof ZodDate) {
       initialValue = null;
+      logger(22);
     } else if (innerType instanceof ZodNumber) {
       initialValue = null;
+      logger(23);
     } else if (innerType instanceof ZodBoolean) {
       initialValue = null;
+      logger(24);
     } else if (innerType instanceof ZodNull) {
       initialValue = null;
+      logger(25);
     } else if (innerType instanceof ZodUndefined) {
       initialValue = null;
+      logger(26);
     } else {
       initialValue = notSupported;
+      logger(27);
     }
   } else {
     initialValue = notSupported;
+    logger(27);
   }
   return initialValue;
 };
@@ -289,6 +323,7 @@ const getTypeSchema = (schema: ZodTypeAny) => {
 };
 
 const makeFieldShape = (key: string, schema: ZodTypeAny) => {
+  console.log('schema:before-create-default-value', schema);
   let v = makeDefaultValueBySchema(schema);
   return {
     mode: 'field',
