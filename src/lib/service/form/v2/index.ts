@@ -79,8 +79,8 @@ const makeDefaultValueBySchema = (schemaValue: any) => {
       initialValue = (defaultValue as undefined) || undefined;
       logger(12);
     } else {
-      initialValue = notSupported;
       logger(13);
+      initialValue = notSupported;
     }
   } else if (schemaValue instanceof ZodOptional) {
     let innerType = schemaValue._def.innerType;
@@ -103,8 +103,8 @@ const makeDefaultValueBySchema = (schemaValue: any) => {
       initialValue = undefined;
       logger(18);
     } else {
-      initialValue = notSupported;
       logger(20);
+      initialValue = notSupported;
     }
   } else if (schemaValue instanceof ZodNullable) {
     let innerType = schemaValue._def.innerType;
@@ -127,12 +127,12 @@ const makeDefaultValueBySchema = (schemaValue: any) => {
       initialValue = null;
       logger(26);
     } else {
-      initialValue = notSupported;
       logger(27);
+      initialValue = notSupported;
     }
   } else {
+    logger(28);
     initialValue = notSupported;
-    logger(27);
   }
   return initialValue;
 };
