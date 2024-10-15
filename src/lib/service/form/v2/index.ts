@@ -18,7 +18,7 @@ import _ from 'lodash';
 import { ref } from 'km-fresh';
 import { PartialDeep } from 'type-fest';
 
-const notSupported = '*notSupported*';
+let notSupported = '*notSupported*';
 
 const addDescriptionToSchema = <SCHEMA extends AnyZodObject>(
   schema: SCHEMA,
@@ -33,6 +33,7 @@ const addDescriptionToSchema = <SCHEMA extends AnyZodObject>(
 const logger = (v: number, enable: boolean = true) => {
   if (enable == true) {
     console.log('log:', v);
+    notSupported = `notSupported ${v}`
   }
 };
 
