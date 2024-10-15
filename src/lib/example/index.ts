@@ -12,7 +12,7 @@ const packageTemplateStarter = () => {
   form.isValid.subscribe(() => {
     console.log('form.isValid', form.isValid);
   });
-  form.setValues({age:12})
+  form.setValues({ age: 12 });
 };
 
 export default {
