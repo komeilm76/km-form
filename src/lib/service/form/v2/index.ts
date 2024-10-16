@@ -39,91 +39,172 @@ const logger = (v: number, enable: boolean = true) => {
 
 const makeDefaultValueBySchema = (schemaValue: any) => {
   let initialValue = undefined;
-  if (schemaValue instanceof ZodString) {
+  if (
+    schemaValue instanceof ZodString ||
+    (schemaValue as ZodString)._def.typeName == 'ZodString'
+  ) {
     initialValue = '';
     logger(1);
-  } else if (schemaValue instanceof ZodDate) {
+  } else if (
+    schemaValue instanceof ZodDate ||
+    (schemaValue as ZodDate)._def.typeName == 'ZodDate'
+  ) {
     initialValue = '';
     logger(2);
-  } else if (schemaValue instanceof ZodNumber) {
+  } else if (
+    schemaValue instanceof ZodNumber ||
+    (schemaValue as ZodNumber)._def.typeName == 'ZodNumber'
+  ) {
     initialValue = 0;
     logger(3);
-  } else if (schemaValue instanceof ZodBoolean) {
+  } else if (
+    schemaValue instanceof ZodBoolean ||
+    (schemaValue as ZodBoolean)._def.typeName == 'ZodBoolean'
+  ) {
     initialValue = false;
     logger(4);
-  } else if (schemaValue instanceof ZodNull) {
+  } else if (
+    schemaValue instanceof ZodNull ||
+    (schemaValue as ZodNull)._def.typeName == 'ZodNull'
+  ) {
     initialValue = null;
     logger(5);
-  } else if (schemaValue instanceof ZodUndefined) {
+  } else if (
+    schemaValue instanceof ZodUndefined ||
+    (schemaValue as ZodUndefined)._def.typeName == 'ZodUndefined'
+  ) {
     initialValue = undefined;
     logger(6);
-  } else if (schemaValue instanceof ZodDefault) {
+  } else if (
+    schemaValue instanceof ZodDefault ||
+    (schemaValue as ZodDefault<ZodTypeAny>)._def.typeName == 'ZodDefault'
+  ) {
     let innerType = schemaValue._def.innerType;
     let defaultValue = schemaValue._def.defaultValue();
-    if (innerType instanceof ZodString) {
+    if (
+      innerType instanceof ZodString ||
+      (innerType as ZodString)._def.typeName == 'ZodString'
+    ) {
       initialValue = (defaultValue as string) || '';
       logger(7);
-    } else if (innerType instanceof ZodDate) {
+    } else if (
+      innerType instanceof ZodDate ||
+      (innerType as ZodDate)._def.typeName == 'ZodDate'
+    ) {
       initialValue = (defaultValue as string) || '';
       logger(8);
-    } else if (innerType instanceof ZodNumber) {
+    } else if (
+      innerType instanceof ZodNumber ||
+      (innerType as ZodNumber)._def.typeName == 'ZodNumber'
+    ) {
       initialValue = (defaultValue as number) || 0;
       logger(9);
-    } else if (innerType instanceof ZodBoolean) {
+    } else if (
+      innerType instanceof ZodBoolean ||
+      (innerType as ZodBoolean)._def.typeName == 'ZodBoolean'
+    ) {
       initialValue = (defaultValue as boolean) || false;
       logger(10);
-    } else if (innerType instanceof ZodNull) {
+    } else if (
+      innerType instanceof ZodNull ||
+      (innerType as ZodNull)._def.typeName == 'ZodNull'
+    ) {
       initialValue = (defaultValue as null) || null;
       logger(11);
-    } else if (innerType instanceof ZodUndefined) {
+    } else if (
+      innerType instanceof ZodUndefined ||
+      (innerType as ZodUndefined)._def.typeName == 'ZodUndefined'
+    ) {
       initialValue = (defaultValue as undefined) || undefined;
       logger(12);
     } else {
       logger(13);
       initialValue = notSupported;
     }
-  } else if (schemaValue instanceof ZodOptional) {
+  } else if (
+    schemaValue instanceof ZodOptional ||
+    (schemaValue as ZodOptional<ZodTypeAny>)._def.typeName == 'ZodOptional'
+  ) {
     let innerType = schemaValue._def.innerType;
-    if (innerType instanceof ZodString) {
+    if (
+      innerType instanceof ZodString ||
+      (innerType as ZodString)._def.typeName == 'ZodString'
+    ) {
       initialValue = undefined;
       logger(14);
-    } else if (innerType instanceof ZodDate) {
+    } else if (
+      innerType instanceof ZodDate ||
+      (innerType as ZodDate)._def.typeName == 'ZodDate'
+    ) {
       initialValue = undefined;
       logger(15);
-    } else if (innerType instanceof ZodNumber) {
+    } else if (
+      innerType instanceof ZodNumber ||
+      (innerType as ZodNumber)._def.typeName == 'ZodNumber'
+    ) {
       initialValue = undefined;
       logger(16);
-    } else if (innerType instanceof ZodBoolean) {
+    } else if (
+      innerType instanceof ZodBoolean ||
+      (innerType as ZodBoolean)._def.typeName == 'ZodBoolean'
+    ) {
       initialValue = undefined;
       logger(17);
-    } else if (innerType instanceof ZodNull) {
+    } else if (
+      innerType instanceof ZodNull ||
+      (innerType as ZodNull)._def.typeName == 'ZodNull'
+    ) {
       initialValue = undefined;
       logger(18);
-    } else if (innerType instanceof ZodUndefined) {
+    } else if (
+      innerType instanceof ZodUndefined ||
+      (innerType as ZodUndefined)._def.typeName == 'ZodUndefined'
+    ) {
       initialValue = undefined;
       logger(18);
     } else {
       logger(20);
       initialValue = notSupported;
     }
-  } else if (schemaValue instanceof ZodNullable) {
+  } else if (
+    schemaValue instanceof ZodNullable ||
+    (schemaValue as ZodNullable<ZodTypeAny>)._def.typeName == 'ZodNullable'
+  ) {
     let innerType = schemaValue._def.innerType;
-    if (innerType instanceof ZodString) {
+    if (
+      innerType instanceof ZodString ||
+      (innerType as ZodString)._def.typeName == 'ZodString'
+    ) {
       initialValue = null;
       logger(21);
-    } else if (innerType instanceof ZodDate) {
+    } else if (
+      innerType instanceof ZodDate ||
+      (innerType as ZodDate)._def.typeName == 'ZodDate'
+    ) {
       initialValue = null;
       logger(22);
-    } else if (innerType instanceof ZodNumber) {
+    } else if (
+      innerType instanceof ZodNumber ||
+      (innerType as ZodNumber)._def.typeName == 'ZodNumber'
+    ) {
       initialValue = null;
       logger(23);
-    } else if (innerType instanceof ZodBoolean) {
+    } else if (
+      innerType instanceof ZodBoolean ||
+      (innerType as ZodBoolean)._def.typeName == 'ZodBoolean'
+    ) {
       initialValue = null;
       logger(24);
-    } else if (innerType instanceof ZodNull) {
+    } else if (
+      innerType instanceof ZodNull ||
+      (innerType as ZodNull)._def.typeName == 'ZodNull'
+    ) {
       initialValue = null;
       logger(25);
-    } else if (innerType instanceof ZodUndefined) {
+    } else if (
+      innerType instanceof ZodUndefined ||
+      (innerType as ZodUndefined)._def.typeName == 'ZodUndefined'
+    ) {
       initialValue = null;
       logger(26);
     } else {
